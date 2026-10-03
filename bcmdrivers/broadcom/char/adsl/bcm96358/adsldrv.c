@@ -33,7 +33,8 @@
 #include <linux/slab.h>
 #include <linux/if_arp.h>
 #include <linux/jiffies.h>
-#include <asm/uaccess.h>
+/* Ported for Linux 6.12: asm/uaccess.h was moved to linux/uaccess.h */
+#include <linux/uaccess.h>
 
 #include <bcmtypes.h>
 #include <adsldrv.h>
@@ -107,7 +108,9 @@ extern void BcmAdslCoreDiagWriteStatusString(char *fmt, ...);
 static int __init adsl_init( void );
 static void __exit adsl_cleanup( void );
 static int adsl_open( struct inode *inode, struct file *filp );
-static int adsl_ioctl( struct inode *inode, struct file *flip,
+/* Ported for Linux 6.12: the legacy file_operations .ioctl method was removed in
+ * 2.6.36; ioctl handling now goes through .unlocked_ioctl (no inode argument). */
+static long adsl_ioctl( struct file *flip,
     unsigned int command, unsigned long arg );
 static void DoCheck( unsigned long arg );
 static void DoInitialize( unsigned long arg );
